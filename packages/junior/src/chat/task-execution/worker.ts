@@ -38,14 +38,14 @@ export interface ConversationWorkerContext {
   attempt: InboxAttempt;
   checkIn(): Promise<boolean>;
   conversationId: string;
-  destination: Destination;
+  destination?: Destination;
   shouldYield(): boolean;
 }
 
 export interface InboxAttempt {
   ack(): Promise<void>;
   conversationId: string;
-  destination: Destination;
+  destination?: Destination;
   drain(
     handle: (messages: InboundMessage[]) => Promise<readonly string[] | void>,
   ): Promise<InboundMessage[]>;
@@ -122,7 +122,7 @@ function nudgeIdempotencyKey(
 
 async function requestLostLeaseRecovery(args: {
   conversationId: string;
-  destination: Destination;
+  destination?: Destination;
   leaseToken: string;
   nowMs: number;
   options: ProcessConversationWorkOptions;
@@ -289,13 +289,6 @@ export async function processConversationWork(
       });
     }
     return { status: "no_work" };
-  }
-  if (!initial.destination) {
-    throw new ConversationQueueMessageRejectedError(
-      "invalid_record",
-      `Conversation work is missing destination context for ${conversationId}`,
-      { conversationId },
-    );
   }
   const destination = initial.destination;
 
@@ -708,6 +701,27 @@ export async function processConversationWork(
           leaseToken: lease.leaseToken,
           conversationStore: options.conversationStore,
           nowMs: errorNowMs,
+          state: options.state,
+        });
+      } else if (failure?.status === "recorded") {
+        await releaseConversationWork({
+          conversationId,
+          leaseToken: lease.leaseToken,
+          conversationStore: options.conversationStore,
+          nowMs: errorNowMs,
+          state: options.state,
+        });
+        await ensureConversationWake({
+          conversationId,
+          conversationStore: options.conversationStore,
+          idempotencyKey: nudgeIdempotencyKey(
+            "error",
+            conversationId,
+            errorNowMs,
+          ),
+          nowMs: errorNowMs,
+          queue: options.queue,
+          replaceExistingWake: true,
           state: options.state,
         });
       } else {

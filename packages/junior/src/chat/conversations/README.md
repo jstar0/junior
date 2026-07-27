@@ -78,8 +78,9 @@ to `unknown`.
 ## Visibility And Retention
 
 Destination visibility is the privacy authority. Messages, agent steps, child
-conversations, and plugin projections inherit it. Retention distinguishes
-expired content from redacted content and purges the complete child tree.
+conversations, agent invocations, and plugin projections inherit it. Retention
+distinguishes expired content from redacted content and purges the complete
+child tree, including delegated input and terminal results.
 
 Every conversation row carries its owning `root_conversation_id`. Roots
 self-reference; descendants copy the root from their immediate parent when

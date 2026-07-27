@@ -30,6 +30,7 @@ function userMessage(text: string): PiMessage {
 
 function failingConversationStore(): ConversationStore {
   return {
+    createChild: vi.fn(),
     get: vi.fn(),
     getDestinationVisibility: vi.fn(async () => undefined),
     recordActivity: vi.fn(async () => {

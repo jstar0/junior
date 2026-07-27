@@ -228,6 +228,9 @@ export async function wireAgentTools(
     mcpToolManager,
     workspace: agentSandbox.workspace,
     surface: args.surface,
+    ...(args.durability.spawnAgent
+      ? { spawnAgent: args.durability.spawnAgent }
+      : {}),
     ...(args.requestHandoff ? { handoff: args.requestHandoff } : {}),
   };
   const toolDestination = toolInvocationDestination(args.routing);

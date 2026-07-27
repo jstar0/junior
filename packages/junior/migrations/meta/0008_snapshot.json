@@ -1,5 +1,5 @@
 {
-  "id": "90f9bca0-661a-4e74-a368-5a4b574b6f96",
+  "id": "eeef7202-0cb2-4b49-bbc8-1d52e10eff0f",
   "prevId": "b85697dd-3399-4757-93bf-3bdad67612ea",
   "version": "7",
   "dialect": "postgresql",
@@ -31,18 +31,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {
@@ -101,12 +89,6 @@
           "name": "invocation_id",
           "type": "text",
           "primaryKey": true,
-          "notNull": true
-        },
-        "idempotency_key": {
-          "name": "idempotency_key",
-          "type": "text",
-          "primaryKey": false,
           "notNull": true
         },
         "parent_conversation_id": {
@@ -213,27 +195,6 @@
         }
       },
       "indexes": {
-        "junior_agent_invocations_idempotency_idx": {
-          "name": "junior_agent_invocations_idempotency_idx",
-          "columns": [
-            {
-              "expression": "parent_conversation_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "idempotency_key",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "junior_agent_invocations_child_idx": {
           "name": "junior_agent_invocations_child_idx",
           "columns": [
